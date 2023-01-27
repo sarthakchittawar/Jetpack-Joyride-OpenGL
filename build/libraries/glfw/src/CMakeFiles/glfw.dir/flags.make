@@ -4,7 +4,7 @@
 # compile C with /usr/bin/cc
 C_DEFINES = -D_GLFW_USE_CONFIG_H
 
-C_INCLUDES = -I/home/sarthak/Desktop/CG/Ass1/libraries/glfw/include -I/home/sarthak/Desktop/CG/Ass1/libraries/glfw/src -I/home/sarthak/Desktop/CG/Ass1/build/libraries/glfw/src
+C_INCLUDES = -I/home/sarthak/Desktop/CG/Assignment-1/libraries/glfw/include -I/home/sarthak/Desktop/CG/Assignment-1/libraries/glfw/src -I/home/sarthak/Desktop/CG/Assignment-1/build/libraries/glfw/src
 
 C_FLAGS = -fPIC -Wall -std=c99
 

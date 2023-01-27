@@ -1,4 +1,4 @@
-# Install script for directory: /home/sarthak/Desktop/CG/Ass1/libraries/glfw
+# Install script for directory: /home/sarthak/Desktop/CG/Assignment-1/libraries/glfw
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -44,6 +44,6 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/home/sarthak/Desktop/CG/Ass1/build/libraries/glfw/src/cmake_install.cmake")
+  include("/home/sarthak/Desktop/CG/Assignment-1/build/libraries/glfw/src/cmake_install.cmake")
 endif()
 

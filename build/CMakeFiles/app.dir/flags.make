@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DGLFW_INCLUDE_NONE
 
-CXX_INCLUDES = -I/home/sarthak/Desktop/CG/Ass1/include -I/home/sarthak/Desktop/CG/Ass1/libraries/glfw/include -I/home/sarthak/Desktop/CG/Ass1/libraries/glad/include -I/home/sarthak/Desktop/CG/Ass1/libraries/glm -I/usr/include/freetype2
+CXX_INCLUDES = -I/home/sarthak/Desktop/CG/Assignment-1/include -I/home/sarthak/Desktop/CG/Assignment-1/libraries/glfw/include -I/home/sarthak/Desktop/CG/Assignment-1/libraries/glad/include -I/home/sarthak/Desktop/CG/Assignment-1/libraries/glm -I/usr/include/freetype2
 
 CXX_FLAGS = -std=gnu++11
 

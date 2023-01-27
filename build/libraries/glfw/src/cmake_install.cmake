@@ -1,4 +1,4 @@
-# Install script for directory: /home/sarthak/Desktop/CG/Ass1/libraries/glfw/src
+# Install script for directory: /home/sarthak/Desktop/CG/Assignment-1/libraries/glfw/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

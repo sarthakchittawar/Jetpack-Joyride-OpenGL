@@ -1,8 +1,9 @@
 CMakeFiles/app.dir/src/main.cpp.o: \
- /home/sarthak/Desktop/CG/Ass1/src/main.cpp /usr/include/stdc-predef.h \
- /home/sarthak/Desktop/CG/Ass1/libraries/glad/include/glad/glad.h \
+ /home/sarthak/Desktop/CG/Assignment-1/src/main.cpp \
+ /usr/include/stdc-predef.h \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glad/include/glad/glad.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stddef.h \
- /home/sarthak/Desktop/CG/Ass1/libraries/glad/include/KHR/khrplatform.h \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glad/include/KHR/khrplatform.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdint.h /usr/include/stdint.h \
  /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
  /usr/include/features.h /usr/include/features-time64.h \
@@ -19,9 +20,9 @@ CMakeFiles/app.dir/src/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/stdint-intn.h \
  /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
  /usr/include/inttypes.h \
- /home/sarthak/Desktop/CG/Ass1/libraries/glfw/include/GLFW/glfw3.h \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/glm.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/_fixes.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glfw/include/GLFW/glfw3.h \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/glm.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/_fixes.hpp \
  /usr/include/c++/11/cmath \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -79,79 +80,79 @@ CMakeFiles/app.dir/src/main.cpp.o: \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/float.h \
  /usr/include/c++/11/limits /usr/include/c++/11/cassert \
  /usr/include/assert.h \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/fwd.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/type_int.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/setup.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/fwd.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/type_int.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/setup.hpp \
  /usr/include/c++/11/cstddef \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../simd/platform.h \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../simd/platform.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/xmmintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/mmintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/mm_malloc.h \
  /usr/include/c++/11/stdlib.h /usr/include/c++/11/cstdlib \
  /usr/include/c++/11/type_traits /usr/include/c++/11/cstdint \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/type_float.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/type_vec.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/precision.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/type_mat.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/vec2.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/type_vec2.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/type_vec2.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/vec3.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/type_vec3.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/type_vec3.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/vec4.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/type_vec4.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/type_vec4.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/type_vec4_simd.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/mat2x2.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/type_mat2x2.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/type_mat2x2.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/func_matrix.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../mat2x3.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_mat2x3.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_mat2x3.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../mat2x4.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_mat2x4.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_mat2x4.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../mat3x2.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_mat3x2.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_mat3x2.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../mat3x3.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_mat3x3.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_mat3x3.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../mat3x4.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_mat3x4.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_mat3x4.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../mat4x2.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_mat4x2.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_mat4x2.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../mat4x3.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_mat4x3.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_mat4x3.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../mat4x4.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_mat4x4.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_mat4x4.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_mat4x4_simd.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/func_matrix.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../geometric.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/func_geometric.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/func_geometric.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/func_exponential.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_vec1.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/type_vec1.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/func_exponential.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/func_vector_relational.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/func_vector_relational.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/func_vector_relational_simd.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/_vectorize.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/func_exponential_simd.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/../simd/exponential.h \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/func_common.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/_fixes.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/func_common.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/func_common_simd.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/../simd/common.h \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/type_float.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/type_vec.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/precision.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/type_mat.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/vec2.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/type_vec2.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/type_vec2.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/vec3.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/type_vec3.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/type_vec3.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/vec4.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/type_vec4.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/type_vec4.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/type_vec4_simd.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/mat2x2.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/type_mat2x2.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/type_mat2x2.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/func_matrix.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../mat2x3.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_mat2x3.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_mat2x3.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../mat2x4.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_mat2x4.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_mat2x4.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../mat3x2.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_mat3x2.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_mat3x2.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../mat3x3.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_mat3x3.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_mat3x3.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../mat3x4.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_mat3x4.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_mat3x4.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../mat4x2.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_mat4x2.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_mat4x2.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../mat4x3.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_mat4x3.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_mat4x3.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../mat4x4.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_mat4x4.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_mat4x4.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_mat4x4_simd.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/func_matrix.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../geometric.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/func_geometric.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/func_geometric.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/func_exponential.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_vec1.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/type_vec1.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/func_exponential.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/func_vector_relational.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/func_vector_relational.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/func_vector_relational_simd.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/_vectorize.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/func_exponential_simd.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/../simd/exponential.h \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/func_common.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/_fixes.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/func_common.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/func_common_simd.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/../simd/common.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/immintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/x86gprintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/ia32intrin.h \
@@ -232,40 +233,40 @@ CMakeFiles/app.dir/src/main.cpp.o: \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/amxbf16intrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/prfchwintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/keylockerintrin.h \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/func_geometric_simd.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../detail/../simd/geometric.h \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/func_matrix_simd.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../simd/matrix.h \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/trigonometric.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/func_trigonometric.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/func_trigonometric.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/func_trigonometric_simd.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/exponential.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/common.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/packing.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/func_packing.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/func_packing.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/type_half.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/type_half.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/func_packing_simd.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/matrix.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/vector_relational.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/integer.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/func_integer.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/func_integer.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/func_integer_simd.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/detail/../simd/integer.h \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/gtc/matrix_transform.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/gtc/../gtc/constants.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/gtc/../gtc/constants.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/gtc/matrix_transform.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/gtc/type_ptr.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/gtc/../gtc/quaternion.hpp \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/gtc/../gtc/quaternion.inl \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/gtc/../gtc/quaternion_simd.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/func_geometric_simd.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../detail/../simd/geometric.h \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/func_matrix_simd.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../simd/matrix.h \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/trigonometric.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/func_trigonometric.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/func_trigonometric.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/func_trigonometric_simd.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/exponential.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/common.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/packing.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/func_packing.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/func_packing.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/type_half.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/type_half.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/func_packing_simd.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/matrix.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/vector_relational.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/integer.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/func_integer.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/func_integer.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/func_integer_simd.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/detail/../simd/integer.h \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/gtc/matrix_transform.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/gtc/../gtc/constants.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/gtc/../gtc/constants.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/gtc/matrix_transform.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/gtc/type_ptr.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/gtc/../gtc/quaternion.hpp \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/gtc/../gtc/quaternion.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/gtc/../gtc/quaternion_simd.inl \
  /usr/include/c++/11/cstring /usr/include/string.h /usr/include/strings.h \
- /home/sarthak/Desktop/CG/Ass1/libraries/glm/glm/gtc/type_ptr.inl \
- /home/sarthak/Desktop/CG/Ass1/include/shader.h \
+ /home/sarthak/Desktop/CG/Assignment-1/libraries/glm/glm/gtc/type_ptr.inl \
+ /home/sarthak/Desktop/CG/Assignment-1/include/shader.h \
  /usr/include/c++/11/string /usr/include/c++/11/bits/stringfwd.h \
  /usr/include/c++/11/bits/memoryfwd.h \
  /usr/include/c++/11/bits/char_traits.h \
@@ -487,7 +488,9 @@ CMakeFiles/app.dir/src/main.cpp.o: \
  /usr/include/c++/11/bits/unordered_map.h \
  /usr/include/c++/11/unordered_set \
  /usr/include/c++/11/bits/unordered_set.h \
- /home/sarthak/Desktop/CG/Ass1/include/stb_image.h \
+ /home/sarthak/Desktop/CG/Assignment-1/include/stb_image.h \
  /usr/include/c++/11/math.h \
- /home/sarthak/Desktop/CG/Ass1/src/background/background.cpp \
- /home/sarthak/Desktop/CG/Ass1/src/zappers/zappers.cpp
+ /home/sarthak/Desktop/CG/Assignment-1/src/background/background.cpp \
+ /home/sarthak/Desktop/CG/Assignment-1/src/background/loss.cpp \
+ /home/sarthak/Desktop/CG/Assignment-1/src/coins/coins.cpp \
+ /home/sarthak/Desktop/CG/Assignment-1/src/zappers/zappers.cpp
