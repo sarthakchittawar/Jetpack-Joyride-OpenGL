@@ -1,0 +1,514 @@
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include "shader.h"
+
+#include <bits/stdc++.h>
+#include <ctime>
+
+#ifndef STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+#endif
+
+#include "background/background.cpp"
+#include "zappers/zappers.cpp"
+
+#define SCREEN_HEIGHT 1080.0f
+#define SCREEN_WIDTH 1920.0f
+
+#define INITIAL_VELOCITY 0.0f
+#define JETPACK_ACCELERATION 1000.0f
+
+GLfloat ypos = 0.0f, yspeed = 0.0f, gravity = 500.0f, jetpack, flytime = 0.0f, maxyspeed = 0.0f, maxypos = 0.0f, prevyspeed = 0.0f, prevypos = 0.0f;
+int airflag = 0, ceilflag = 0;
+
+void setySpeed(GLfloat t)
+{
+    yspeed = prevyspeed + (jetpack -gravity) * t;
+}
+
+void setyPos(GLfloat t)
+{
+    ypos = prevypos + prevyspeed * t + 0.5 * (jetpack - gravity) * t * t;
+}
+
+void processInput(GLFWwindow *window, int *imgindex)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    {
+        *imgindex = 5;
+        if (airflag == 0) flytime = 0;
+        airflag = 1;
+        jetpack = JETPACK_ACCELERATION;
+        setySpeed(flytime);
+        setyPos(flytime);
+        flytime += 0.001f;
+        // std::cout << "flying until top with jetpack" << std::endl;
+    }
+    else if (airflag == 1)
+    {
+        airflag = 0;
+        flytime = 0;
+        maxyspeed = yspeed;
+        maxypos = ypos;
+        prevypos = ypos;
+        prevyspeed = yspeed;
+    }
+    
+}
+
+int checkCollision(glm::mat4 vertices1, glm::mat4 vertices2)
+{
+    // iterate through all edges of v1
+    for(int i=0; i<4; i++)
+    {
+        // iterate through all vertices of v2
+        for(int j=0; j<4; j++)
+        {
+            float x = vertices2[j][0];
+            float y = vertices2[j][1];
+            float x1 = vertices1[i][0];
+            float y1 = vertices1[i][1];
+            float x2 = vertices1[(i+1)%4][0];
+            float y2 = vertices1[(i+1)%4][1];
+            float dist = sqrtf((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2));
+            float dist1 = sqrtf((x1 - x)*(x1 - x) + (y1 - y)*(y1 - y));
+            float dist2 = sqrtf((x - x2)*(x - x2) + (y - y2)*(y - y2));
+
+            if ((dist1 + dist2 - dist) < 0.001) return 1;
+        }
+    }
+    // iterate through all edges of v2
+    for(int i=0; i<4; i++)
+    {
+        // iterate through all vertices of v1
+        for(int j=0; j<4; j++)
+        {
+            float x = vertices1[j][0];
+            float y = vertices1[j][1];
+            float x1 = vertices2[i][0];
+            float y1 = vertices2[i][1];
+            float x2 = vertices2[(i+1)%4][0];
+            float y2 = vertices2[(i+1)%4][1];
+            float dist = sqrtf((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2));
+            float dist1 = sqrtf((x1 - x)*(x1 - x) + (y1 - y)*(y1 - y));
+            float dist2 = sqrtf((x - x2)*(x - x2) + (y - y2)*(y - y2));
+
+            if ((dist1 + dist2 - dist) < 0.001) return 1;
+        }
+    }
+    return 0;
+}
+
+// int transform_arrays(GLfloat vertices1)
+
+// glfw: whenever the window size changed (by OS or user resize) this callback function executes
+// ---------------------------------------------------------------------------------------------
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    // make sure the viewport matches the new window dimensions; note that width and 
+    // height will be significantly larger than specified on retina displays.
+    glViewport(0, 0, width, height);
+}
+
+int main()
+{
+    glfwInit();
+    
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    GLFWwindow *window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Jetpack Joyride", NULL, NULL);
+    if (window == NULL)
+    {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
+
+    glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    GLfloat vertices[] = {
+        -0.68f, -0.87f, 0.0f,         0.0f, 0.0f,
+        -0.555f, -0.87f, 0.0f,       1.0f, 0.0f, 
+        -0.555f, -0.62f, 0.0f,      1.0f, 1.0f,
+        -0.68f, -0.62f, 0.0f,        0.0f, 1.0f
+    };
+
+    GLfloat playerverts[4][4];
+    for(int i=0; i<4; i++)
+    {
+        for(int j=0; j<3; j++)
+        {
+            playerverts[i][j] = vertices[i*5 + j];
+        }
+        playerverts[i][3] = 1.0f;
+    }
+
+    GLfloat zappervertices[] = {
+        1.00f, -0.40f, 0.0f,     0.0f, 0.0f,
+        1.12f, -0.40f, 0.0f,      1.0f, 0.0f,
+        1.12f, 0.40f, 0.0f,       1.0f, 1.0f,
+        1.00f, 0.40f, 0.0f,      0.0f, 1.0f
+    };
+
+    GLfloat zapperverts[4][4];
+    for(int i=0; i<4; i++)
+    {
+        for(int j=0; j<3; j++)
+        {
+            zapperverts[i][j] = zappervertices[i*5 + j];
+        }
+        zapperverts[i][3] = 1.0f;
+    }
+
+    GLuint indices[] = {
+        0, 1, 2,                // triangle player
+        0, 2, 3,
+    };
+    
+    gladLoadGL();
+
+    glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    GLuint bgtexture, bgVAO;
+    bgsetup(&bgVAO, &bgtexture);
+
+    GLuint zappertexture, zapperVAO;
+    zappersetup(&zapperVAO, &zappertexture, zappervertices);
+
+    GLuint VAO, VBO, EBO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
+
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(unsigned int)));
+    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    // set the texture wrapping/filtering options (on the currently bound texture object)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);  
+
+
+    glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glfwSwapBuffers(window);
+
+    Shader ourShader("../src/vshader.vs", "../src/fshader.fs");
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
+    int time = 0;
+
+    const char images[6][20] = {"../src/images/1.png", "../src/images/2.png", "../src/images/3.png", "../src/images/4.png", "../src/images/5.png", "../src/images/6.png"};
+    int imgindex = 0;
+
+    GLfloat bgshift = 0.0f, zappershift = 0.0f;
+
+    glm::mat4 model = glm::mat4(1.0f);
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
+
+    int numOfZappers = 3;
+    time_t curtime;
+    curtime = std::time(NULL);
+    srand(curtime);
+    GLfloat zapperdisp[numOfZappers][4];
+
+    for(int i=0; i<numOfZappers; i++)
+    {
+        if (i%2==0) zapperdisp[i][0] = rand()/(float)RAND_MAX * 0.75 - 0.75;
+        else zapperdisp[i][0] = rand()/(float)RAND_MAX * 0.75;
+        zapperdisp[i][1] = i * 2.4f/numOfZappers;
+        zapperdisp[i][2] = rand() % 11;
+        zapperdisp[i][3] = 0;
+        // std::cout << zapperdisp[i][0] << std::endl;
+    }
+
+    int c = 0;
+
+    while(!glfwWindowShouldClose(window))
+    {
+        c++;
+        if (time >= 20)
+        {
+            time = 0;
+            imgindex = (imgindex + 1) % 4;
+            if (ypos > 0)
+            {
+                imgindex = 4;
+            }
+        }
+        time++;
+
+        processInput(window, &imgindex);
+
+        if (ypos < 0)
+        {
+            ypos = 0;
+            flytime = 0;
+            prevypos = 0;
+            prevyspeed = 0;
+        }
+        if (ypos > 1.5 || (airflag == 1 && round(ypos * 1000000)/(float)1000000 == 1.5))
+        {
+            ypos = 1.5;
+            flytime = 0;
+            prevypos = 1.5;
+            if (airflag == 0)
+            {
+                prevyspeed = -0.3 * yspeed;
+                maxypos = 1.5;
+                maxyspeed = -0.3 * yspeed;
+            }
+            else
+            {
+                prevyspeed = 0;
+                maxyspeed = 0;
+            }
+
+        }
+
+        if (airflag == 0 && ypos>0)
+        {
+            if (round((maxypos + maxyspeed * flytime - 0.5 * gravity * flytime * flytime)*100000) == 0 || (maxypos + maxyspeed * flytime - 0.5 * gravity * flytime * flytime < 0))
+            {
+                yspeed = 0.0f;
+                flytime = 0.0f;
+                ypos = 0.0f;
+                // std::cout << "at ground" << std::endl;
+                prevyspeed = yspeed;
+                prevypos = ypos;
+            }
+            else
+            {
+                yspeed = maxyspeed - gravity * flytime;
+                ypos = maxypos + maxyspeed * flytime - 0.5 * gravity * flytime * flytime;
+                flytime += 0.001f;
+                // std::cout << "freefall" << std::endl;
+                prevyspeed = yspeed;
+                prevypos = ypos;
+            }
+        }
+
+        for(int i=0; i<numOfZappers; i++)
+        {
+            if (zapperdisp[i][1] < -2.25)
+            {
+                if (i%2==0) zapperdisp[i][0] = rand()/(float)RAND_MAX * 0.75 - 0.75;
+                else zapperdisp[i][0] = rand()/(float)RAND_MAX * 0.75;
+                zapperdisp[i][1] = zapperdisp[(i+numOfZappers-1)%numOfZappers][1] + 2.4f/numOfZappers;
+                zapperdisp[i][2] = rand() % 11;
+                zapperdisp[i][3] = 0;
+                // std::cout << zapperdisp[i][0] << std::endl;
+            }
+            else zapperdisp[i][1] -= 0.004;
+        }
+
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        bgwhile(&bgVAO, &bgtexture, ourShader);
+        
+        for(int i=0; i<numOfZappers; i++)
+        {
+            model[3][0] = zapperdisp[i][1];
+            model[3][1] = zapperdisp[i][0];
+            glm::mat4 translate = glm::mat4(1);
+            translate[3][0] = -1.06f - zapperdisp[i][1];
+            translate[3][1] = 0.0f - zapperdisp[i][0];
+            glm::mat4 translateback = glm::mat4(1);
+            translateback[3][0] = 1.06f + zapperdisp[i][1];
+            translateback[3][1] = 0.0f + zapperdisp[i][0];
+            glm::mat4 rotate = glm::mat4(1);
+            float theta;
+            if (zapperdisp[i][2] >= 0 && zapperdisp[i][2] <= 5)
+                theta = 0.0f;
+            else if (zapperdisp[i][2] >= 6 && zapperdisp[i][2] <= 7)
+                theta = 45.0f;
+            else if (zapperdisp[i][2] >= 3 && zapperdisp[i][2] <= 5)
+                theta = 90.0f;
+            else if (zapperdisp[i][2] >= 8 && zapperdisp[i][2] <= 9)
+                theta = -45.0f;
+            else if (zapperdisp[i][2] == 10)
+            {
+                // std::cout << theta << std::endl;
+                theta = zapperdisp[i][3];
+                zapperdisp[i][3] += 1.0f;
+            }    
+            
+            rotate[1][1] = cos(glm::radians(theta));
+            rotate[1][0] = -sin(glm::radians(theta));
+            rotate[0][1] = sin(glm::radians(theta));
+            rotate[0][0] = cos(glm::radians(theta));
+            glm::mat4 scale = glm::mat4(1);
+            if (zapperdisp[i][2] > 5)
+            {
+                scale[0][0] = SCREEN_HEIGHT/SCREEN_WIDTH;
+            }
+            glm::mat4 zappermodel = translateback * scale * rotate * translate * model; // scaling issue
+            
+            ourShader.setMat4("model", zappermodel);
+            int collision = 0;
+
+            glm::vec4 vec1 = zappermodel * glm::make_vec4(zapperverts[0]);
+            glm::vec4 vec2 = zappermodel * glm::make_vec4(zapperverts[1]);
+            glm::vec4 vec3 = zappermodel * glm::make_vec4(zapperverts[2]);
+            glm::vec4 vec4 = zappermodel * glm::make_vec4(zapperverts[3]);
+            
+            glm::mat4 zapperverts2 = glm::mat4(1);
+
+            for(int i=0; i<4; i++)
+            {
+                zapperverts2[0][i] = vec1[i];
+                zapperverts2[1][i] = vec2[i];
+                zapperverts2[2][i] = vec3[i];
+                zapperverts2[3][i] = vec4[i];
+            }
+            glm::mat4 playermodel = glm::mat4(1);
+            playermodel[3][1] = ypos;
+
+            vec1 = playermodel * glm::make_vec4(playerverts[0]);
+            vec2 = playermodel * glm::make_vec4(playerverts[1]);
+            vec3 = playermodel * glm::make_vec4(playerverts[2]);
+            vec4 = playermodel * glm::make_vec4(playerverts[3]);
+            
+            glm::mat4 playerverts2 = glm::mat4(1);
+
+            for(int i=0; i<4; i++)
+            {
+                playerverts2[0][i] = vec1[i];
+                playerverts2[1][i] = vec2[i];
+                playerverts2[2][i] = vec3[i];
+                playerverts2[3][i] = vec4[i];
+            }
+
+            if (checkCollision(zapperverts2, playerverts2))
+            {
+                zapperdisp[i][3] = 1;
+            }
+            if (zapperdisp[i][3] == 0)
+                zapperwhile(&zapperVAO, &zappertexture, ourShader);
+        }
+        
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture);
+
+        // load and generate the texture
+        int width, height, nrChannels;
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        stbi_set_flip_vertically_on_load(true);
+        unsigned char *data = stbi_load(images[imgindex], &width, &height, &nrChannels, 0);
+        if (data)
+        {
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
+        }
+        else
+        {
+            std::cout << "Failed to load texture" << std::endl;
+        }
+        stbi_image_free(data);
+
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
+        
+        ourShader.use();
+        glUniform1i(glGetUniformLocation(ourShader.ID, "OurTexture"), 0);
+
+        glBindVertexArray(VAO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        model = glm::mat4(1.0f);
+
+        model[3][1] = ypos;
+        ourShader.setMat4("model", model);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *)0);
+
+        model[3][1] = 0.0f;
+
+        if (bgshift >= -2) bgshift -= 0.004;
+        else bgshift = 0.0;
+
+        model[3][0] = bgshift;
+        ourShader.setMat4("model", model);
+
+        glfwSwapBuffers(window);
+
+        glfwPollEvents();
+    }
+
+    glfwDestroyWindow(window);    
+    glfwTerminate();
+}
+
+// VAO & VBO -- order matters
+    // GLuint VAO, VBO, EBO;
+    // glGenVertexArrays(1, &VAO);
+    // glGenBuffers(1, &VBO);
+    // glGenBuffers(1, &EBO);
+
+    // glBindVertexArray(VAO);
+    // glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    // glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+    // glEnableVertexAttribArray(0);
+    // glBindBuffer(GL_ARRAY_BUFFER, 0);
+    // glBindVertexArray(0);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+
+// // Vertex Shader
+    // GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    // glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    // glCompileShader(vertexShader); // to make GPU understand code
+
+    // // Fragment Shader
+    // GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    // glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    // glCompileShader(fragmentShader);
+
+    // // Shader program to wrap both shaders to output
+    // GLuint shaderProgram = glCreateProgram();
+    // glAttachShader(shaderProgram, vertexShader);
+    // glAttachShader(shaderProgram, fragmentShader);
+
+    // glLinkProgram(shaderProgram); // Link shader program
+
+    // glDeleteShader(vertexShader);
+    // glDeleteShader(fragmentShader);
