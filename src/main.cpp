@@ -280,7 +280,7 @@ int main()
     time_t curtime;
     curtime = std::time(NULL);
     srand(curtime);
-    GLfloat zapperdisp[4][5];
+    GLfloat zapperdisp[4][6];
 
     for(int i=0; i<numOfZappers; i++)
     {
@@ -290,6 +290,7 @@ int main()
         zapperdisp[i][2] = rand() % 11;
         zapperdisp[i][3] = 0;
         zapperdisp[i][4] = 0;
+        zapperdisp[i][5] = rand() / (float)RAND_MAX;
     }
 
     int numOfCoins = 10;
@@ -306,8 +307,12 @@ int main()
 
     int level = 0, leveltime = 0;
 
+    float glow = 0.0f;
+
     while(!glfwWindowShouldClose(window))
     {
+        ourShader.setFloat("glow", 0);
+
         if (loss)
             std::cout << "You lost, your score is: " << score << std::endl;
         else if (win)
@@ -337,6 +342,7 @@ int main()
                 zapperdisp[i][2] = rand() % 11;
                 zapperdisp[i][3] = 0;
                 zapperdisp[i][4] = 0;
+                zapperdisp[i][5] = rand() / (float)RAND_MAX;
             }
 
             for(int i=0; i<levels[level][1]; i++)
@@ -414,6 +420,7 @@ int main()
                 zapperdisp[i][2] = rand() % 11;
                 zapperdisp[i][3] = 0;
                 zapperdisp[i][4] = 0;
+                zapperdisp[i][5] = rand() / (float)RAND_MAX;
                 // std::cout << zapperdisp[i][0] << std::endl;
             }
             else zapperdisp[i][1] -= levels[level][2];
@@ -439,6 +446,7 @@ int main()
             ourShader.use();
             model = glm::mat4(1);
             ourShader.setMat4("model", model);
+            ourShader.setFloat("glow", 0);
             lossbgwhile(&lossbgVAO, &lossbgtexture, ourShader);
         }
         else if (win & !loss)
@@ -446,11 +454,12 @@ int main()
             ourShader.use();
             model = glm::mat4(1);
             ourShader.setMat4("model", model);
+            ourShader.setFloat("glow", 0);
             winbgwhile(&winbgVAO, &winbgtexture, ourShader);
         }
         else
         {
-        
+            ourShader.setFloat("glow", 0);
             bgwhile(&bgVAO, &bgtexture, ourShader);
             
             for(int i=0; i<numOfZappers; i++)
@@ -534,8 +543,13 @@ int main()
                     win = 0;
                 }
                 if (zapperdisp[i][4] == 0)
+                {
+                    ourShader.setFloat("glow", sin(zapperdisp[i][5]));
                     zapperwhile(&zapperVAO, &zappertexture, ourShader);
+                    zapperdisp[i][5] += 0.1; 
+                }
             }
+            ourShader.setFloat("glow", 0);
             for(int i=0; i<numOfCoins; i++)
             {
                 glm::mat4 coinverts2 = glm::mat4(1);
@@ -624,6 +638,12 @@ int main()
 
             model[3][1] = ypos;
             ourShader.setMat4("model", model);
+            if (airflag == 1)
+            {
+                ourShader.setFloat("glow", sin(glow));
+                glow += 0.1f;
+            }
+            else ourShader.setFloat("glow", 0);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *)0);
 
             model[3][1] = 0.0f;
