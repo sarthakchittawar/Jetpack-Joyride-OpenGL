@@ -94,7 +94,7 @@ app: CMakeFiles/app.dir/src/main.cpp.o
 app: CMakeFiles/app.dir/build.make
 app: libraries/glfw/src/libglfw3.a
 app: libglad.a
-app: /usr/local/lib/libfreetype.a
+app: /usr/local/freetype/2_12_1/lib/libfreetype.so
 app: /usr/lib/x86_64-linux-gnu/librt.a
 app: /usr/lib/x86_64-linux-gnu/libm.so
 app: CMakeFiles/app.dir/link.txt

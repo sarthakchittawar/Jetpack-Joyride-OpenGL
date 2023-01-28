@@ -1,1 +1,1 @@
-/usr/bin/c++ -rdynamic CMakeFiles/app.dir/src/main.cpp.o -o app  libraries/glfw/src/libglfw3.a libglad.a -ldl /usr/local/lib/libfreetype.a -lGL -lGLEW -lGL -lX11 -lGLU -Wl,-Bstatic -lrt -Wl,-Bdynamic -lm -ldl -lGLEW -lX11 -lGLU 
+/usr/bin/c++ -rdynamic CMakeFiles/app.dir/src/main.cpp.o -o app  -Wl,-rpath,/usr/local/freetype/2_12_1/lib libraries/glfw/src/libglfw3.a libglad.a -ldl /usr/local/freetype/2_12_1/lib/libfreetype.so -lGL -lGLEW -lGL -lX11 -lGLU -Wl,-Bstatic -lrt -Wl,-Bdynamic -lm -ldl -lGLEW -lX11 -lGLU 

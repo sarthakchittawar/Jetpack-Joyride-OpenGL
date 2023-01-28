@@ -348,6 +348,7 @@ int main()
         }
         if (level >= 3){
             win = 1;
+            loss = 0;
         }
 
         numOfZappers = levels[level][0];
