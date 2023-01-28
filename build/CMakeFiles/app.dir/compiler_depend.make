@@ -578,11 +578,14 @@ CMakeFiles/app.dir/src/main.cpp.o: ../src/main.cpp \
   /usr/include/c++/11/math.h \
   ../src/background/background.cpp \
   ../src/background/loss.cpp \
+  ../src/background/win.cpp \
   ../src/coins/coins.cpp \
   ../src/zappers/zappers.cpp
 
 
 ../src/zappers/zappers.cpp:
+
+../src/background/win.cpp:
 
 ../src/background/loss.cpp:
 

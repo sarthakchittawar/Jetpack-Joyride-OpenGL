@@ -15,6 +15,7 @@
 
 #include "background/background.cpp"
 #include "background/loss.cpp"
+#include "background/win.cpp"
 #include "coins/coins.cpp"
 #include "zappers/zappers.cpp"
 
@@ -207,6 +208,9 @@ int main()
     GLuint lossbgtexture, lossbgVAO;
     lossbgsetup(&lossbgVAO, &lossbgtexture);
 
+    GLuint winbgtexture, winbgVAO;
+    winbgsetup(&winbgVAO, &winbgtexture);
+
     GLuint zappertexture, zapperVAO;
     zappersetup(&zapperVAO, &zappertexture, zappervertices);
 
@@ -261,11 +265,22 @@ int main()
     glm::mat4 model = glm::mat4(1.0f);
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
 
-    int numOfZappers = 3;
+    GLfloat levels[3][3];
+    levels[0][0] = 3;
+    levels[0][1] = 10;
+    levels[0][2] = 0.004;
+    levels[1][0] = 4;
+    levels[1][1] = 10;
+    levels[1][2] = 0.004;
+    levels[2][0] = 4;
+    levels[2][1] = 10;
+    levels[2][2] = 0.006;
+
+    int numOfZappers = 4;
     time_t curtime;
     curtime = std::time(NULL);
     srand(curtime);
-    GLfloat zapperdisp[numOfZappers][5];
+    GLfloat zapperdisp[4][5];
 
     for(int i=0; i<numOfZappers; i++)
     {
@@ -278,22 +293,26 @@ int main()
     }
 
     int numOfCoins = 10;
-    GLfloat coindisp[numOfCoins][3];
+    GLfloat coindisp[10][3];
 
     for(int i=0; i<numOfCoins; i++)
     {
         coindisp[i][0] = rand()/(float)RAND_MAX * 1.5 - 0.75;
-        coindisp[i][1] = i * 3.0f/numOfCoins;
+        coindisp[i][1] = i * 3.2f/numOfCoins;
         coindisp[i][2] = 0;
     }
 
-    int loss = 0, score = 0;
+    int loss = 0, win = 0, score = 0;
+
+    int level = 0, leveltime = 0;
 
     while(!glfwWindowShouldClose(window))
     {
         if (loss)
             std::cout << "You lost, your score is: " << score << std::endl;
-        if (time >= 20)
+        else if (win)
+            std::cout << "You won, your score is: " << score << std::endl;
+        if (time >= 20 / levels[level][2] * 0.004)
         {
             time = 0;
             imgindex = (imgindex + 1) % 4;
@@ -303,6 +322,36 @@ int main()
             }
         }
         time++;
+        leveltime++;
+        if (leveltime > 1000)   // change this step value to increase level length
+        {
+            level++;
+            leveltime = 0;
+            std::cout << "NEW LEVEL" << std::endl;
+
+            for(int i=0; i<levels[level][0]; i++)
+            {
+                if (i%2==0) zapperdisp[i][0] = rand()/(float)RAND_MAX * 0.75 - 0.75;
+                else zapperdisp[i][0] = rand()/(float)RAND_MAX * 0.75;
+                zapperdisp[i][1] = i * 2.4f/levels[level][0];
+                zapperdisp[i][2] = rand() % 11;
+                zapperdisp[i][3] = 0;
+                zapperdisp[i][4] = 0;
+            }
+
+            for(int i=0; i<levels[level][1]; i++)
+            {
+                coindisp[i][0] = rand()/(float)RAND_MAX * 1.5 - 0.75;
+                coindisp[i][1] = i * 3.2f/levels[level][1];
+                coindisp[i][2] = 0;
+            }
+        }
+        if (level >= 3){
+            win = 1;
+        }
+
+        numOfZappers = levels[level][0];
+        numOfCoins = levels[level][1];
 
         processInput(window, &imgindex);
 
@@ -366,7 +415,7 @@ int main()
                 zapperdisp[i][4] = 0;
                 // std::cout << zapperdisp[i][0] << std::endl;
             }
-            else zapperdisp[i][1] -= 0.004;
+            else zapperdisp[i][1] -= levels[level][2];
         }
 
         for(int i=0; i<numOfCoins; i++)
@@ -374,22 +423,29 @@ int main()
             if (coindisp[i][1] < -2.25)
             {
                 coindisp[i][0] = rand()/(float)RAND_MAX * 1.5 - 0.75;
-                coindisp[i][1] = coindisp[(i+numOfCoins-1)%numOfCoins][1] + 3.0f/numOfCoins;
+                coindisp[i][1] = coindisp[(i+numOfCoins-1)%numOfCoins][1] + 3.2f/numOfCoins;
                 coindisp[i][2] = 0;
                 // std::cout << zapperdisp[i][0] << std::endl;
             }
-            else coindisp[i][1] -= 0.004;
+            else coindisp[i][1] -= levels[level][2];
         }
 
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        if (loss)
+        if (loss & !win)
         {
             ourShader.use();
             model = glm::mat4(1);
             ourShader.setMat4("model", model);
             lossbgwhile(&lossbgVAO, &lossbgtexture, ourShader);
+        }
+        else if (win & !loss)
+        {
+            ourShader.use();
+            model = glm::mat4(1);
+            ourShader.setMat4("model", model);
+            winbgwhile(&winbgVAO, &winbgtexture, ourShader);
         }
         else
         {
@@ -470,9 +526,11 @@ int main()
 
                 if (checkCollision(zapperverts2, playerverts2))
                 {
-                    // std::cout << "Collision " << zapperdisp[i][2] << "\n" << std::endl; 
+                    if (loss == 0)
+                        // std::cout << "Collision " << zapperdisp[i][2] << "\n" << std::endl; 
                     zapperdisp[i][4] = 1;
                     loss = 1;
+                    win = 0;
                 }
                 if (zapperdisp[i][4] == 0)
                     zapperwhile(&zapperVAO, &zappertexture, ourShader);
@@ -521,7 +579,10 @@ int main()
                 if (checkCollision(coinverts2, playerverts2))
                 {
                     if (coindisp[i][2] == 0)
+                    {
                         score++;
+                        std:: cout << "score: " << score << std::endl;
+                    }
                     coindisp[i][2] = 1;
                 }
                 if (coindisp[i][2] == 0)
@@ -566,7 +627,7 @@ int main()
 
             model[3][1] = 0.0f;
 
-            if (bgshift >= -2) bgshift -= 0.004;
+            if (bgshift >= -2) bgshift -= levels[level][2];
             else bgshift = 0.0;
 
             model[3][0] = bgshift;
@@ -581,3 +642,5 @@ int main()
     glfwDestroyWindow(window);    
     glfwTerminate();
 }
+
+// The zappers/coins of next level overlap with those of prev level, FIX THAT
