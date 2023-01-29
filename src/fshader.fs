@@ -2,21 +2,22 @@
 out vec4 FragColour;
 
 in vec2 TexCoord;
+in float smoothness;
 
 uniform sampler2D ourTexture;
-uniform float glow;
-float edge0 = 0.0;
-float edge1 = 2.0;
+uniform int glow;
 
 void main()
 {
    vec4 colour = texture(ourTexture, TexCoord);
    if (colour.a < 1)
    {
-      discard;
+      if (glow == 1)
+         colour = mix(colour, vec4(1.0, 1.0, 1.0, 1.0), smoothness/20);
+      else if (glow == 2)
+         colour = mix(colour, vec4(1.0, 1.0, 0.0, 1.0), smoothness);
+      else discard;  
    }
-
-   float intensity = smoothstep(edge0, edge1, glow);
    
-   FragColour = colour + vec4(intensity);
+   FragColour = colour;
 }

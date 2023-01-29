@@ -280,7 +280,7 @@ int main()
     time_t curtime;
     curtime = std::time(NULL);
     srand(curtime);
-    GLfloat zapperdisp[4][6];
+    GLfloat zapperdisp[4][5];
 
     for(int i=0; i<numOfZappers; i++)
     {
@@ -290,7 +290,6 @@ int main()
         zapperdisp[i][2] = rand() % 11;
         zapperdisp[i][3] = 0;
         zapperdisp[i][4] = 0;
-        zapperdisp[i][5] = rand() / (float)RAND_MAX;
     }
 
     int numOfCoins = 10;
@@ -307,12 +306,15 @@ int main()
 
     int level = 0, leveltime = 0;
 
-    float glow = 0.0f;
+    ourShader.setInt("glow", 0);
+    glm::vec4 midpoint = glm::vec4(0, 0, 0, 1);
+    ourShader.setVec4("midpoint", midpoint);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
     while(!glfwWindowShouldClose(window))
     {
-        ourShader.setFloat("glow", 0);
-
         if (loss)
             std::cout << "You lost, your score is: " << score << std::endl;
         else if (win)
@@ -342,7 +344,6 @@ int main()
                 zapperdisp[i][2] = rand() % 11;
                 zapperdisp[i][3] = 0;
                 zapperdisp[i][4] = 0;
-                zapperdisp[i][5] = rand() / (float)RAND_MAX;
             }
 
             for(int i=0; i<levels[level][1]; i++)
@@ -420,7 +421,6 @@ int main()
                 zapperdisp[i][2] = rand() % 11;
                 zapperdisp[i][3] = 0;
                 zapperdisp[i][4] = 0;
-                zapperdisp[i][5] = rand() / (float)RAND_MAX;
                 // std::cout << zapperdisp[i][0] << std::endl;
             }
             else zapperdisp[i][1] -= levels[level][2];
@@ -446,7 +446,7 @@ int main()
             ourShader.use();
             model = glm::mat4(1);
             ourShader.setMat4("model", model);
-            ourShader.setFloat("glow", 0);
+            ourShader.setInt("glow", 0);
             lossbgwhile(&lossbgVAO, &lossbgtexture, ourShader);
         }
         else if (win & !loss)
@@ -454,13 +454,16 @@ int main()
             ourShader.use();
             model = glm::mat4(1);
             ourShader.setMat4("model", model);
-            ourShader.setFloat("glow", 0);
+            ourShader.setInt("glow", 0);
             winbgwhile(&winbgVAO, &winbgtexture, ourShader);
         }
         else
         {
-            ourShader.setFloat("glow", 0);
+            ourShader.setInt("glow", 0);
+            midpoint = glm::vec4(0, 0, 0, 1);
+            ourShader.setVec4("midpoint", midpoint);
             bgwhile(&bgVAO, &bgtexture, ourShader);
+            ourShader.setInt("glow", 2);
             
             for(int i=0; i<numOfZappers; i++)
             {
@@ -542,14 +545,15 @@ int main()
                     loss = 1;
                     win = 0;
                 }
+                midpoint[0] = (zapperverts2[0][0] + zapperverts2[1][0] + zapperverts2[2][0] + zapperverts2[3][0]) / 4;
+                midpoint[1] = (zapperverts2[0][1] + zapperverts2[1][1] + zapperverts2[2][1] + zapperverts2[3][1]) / 4;
+                midpoint[2] = 0.0f;
+                midpoint[3] = 1.0f;
+                ourShader.setVec4("midpoint", midpoint);
                 if (zapperdisp[i][4] == 0)
-                {
-                    ourShader.setFloat("glow", sin(zapperdisp[i][5]));
                     zapperwhile(&zapperVAO, &zappertexture, ourShader);
-                    zapperdisp[i][5] += 0.1; 
-                }
             }
-            ourShader.setFloat("glow", 0);
+            ourShader.setInt("glow", 0);
             for(int i=0; i<numOfCoins; i++)
             {
                 glm::mat4 coinverts2 = glm::mat4(1);
@@ -600,9 +604,16 @@ int main()
                     }
                     coindisp[i][2] = 1;
                 }
+                midpoint[0] = (playerverts2[0][0] + playerverts2[1][0] + playerverts2[2][0] + playerverts2[3][0]) / 4;
+                midpoint[1] = (playerverts2[0][1] + playerverts2[1][1] + playerverts2[2][1] + playerverts2[3][1]) / 4;
+                midpoint[2] = 0.0f;
+                midpoint[3] = 1.0f;
+                ourShader.setVec4("midpoint", midpoint);
                 if (coindisp[i][2] == 0)
                     coinwhile(&coinVAO, &cointexture, ourShader);
-            }           
+            }
+            if (airflag == 1) ourShader.setInt("glow", 1);
+            else ourShader.setInt("glow", 0);           
             
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture);
@@ -638,12 +649,8 @@ int main()
 
             model[3][1] = ypos;
             ourShader.setMat4("model", model);
-            if (airflag == 1)
-            {
-                ourShader.setFloat("glow", sin(glow));
-                glow += 0.1f;
-            }
-            else ourShader.setFloat("glow", 0);
+            midpoint = glm::vec4(0, 0, 0, 1);
+            ourShader.setVec4("midpoint", midpoint);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *)0);
 
             model[3][1] = 0.0f;
