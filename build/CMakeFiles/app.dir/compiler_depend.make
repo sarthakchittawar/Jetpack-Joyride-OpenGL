@@ -580,8 +580,45 @@ CMakeFiles/app.dir/src/main.cpp.o: ../src/main.cpp \
   ../src/background/loss.cpp \
   ../src/background/win.cpp \
   ../src/coins/coins.cpp \
-  ../src/zappers/zappers.cpp
+  ../src/zappers/zappers.cpp \
+  /usr/include/freetype2/ft2build.h \
+  /usr/include/freetype2/freetype/config/ftheader.h \
+  /usr/include/freetype2/freetype/freetype.h \
+  /usr/include/freetype2/freetype/config/ftconfig.h \
+  /usr/include/freetype2/freetype/config/ftoption.h \
+  /usr/include/freetype2/freetype/config/ftstdlib.h \
+  /usr/include/freetype2/freetype/config/integer-types.h \
+  /usr/include/freetype2/freetype/config/public-macros.h \
+  /usr/include/freetype2/freetype/config/mac-support.h \
+  /usr/include/freetype2/freetype/fttypes.h \
+  /usr/include/freetype2/freetype/ftsystem.h \
+  /usr/include/freetype2/freetype/ftimage.h \
+  /usr/include/freetype2/freetype/fterrors.h \
+  /usr/include/freetype2/freetype/ftmoderr.h \
+  /usr/include/freetype2/freetype/fterrdef.h
 
+
+/usr/include/freetype2/freetype/fterrdef.h:
+
+/usr/include/freetype2/freetype/ftmoderr.h:
+
+/usr/include/freetype2/freetype/fterrors.h:
+
+/usr/include/freetype2/freetype/ftimage.h:
+
+/usr/include/freetype2/freetype/fttypes.h:
+
+/usr/include/freetype2/freetype/config/public-macros.h:
+
+/usr/include/freetype2/freetype/config/integer-types.h:
+
+/usr/include/freetype2/freetype/config/ftstdlib.h:
+
+/usr/include/freetype2/freetype/config/ftoption.h:
+
+/usr/include/freetype2/freetype/config/ftconfig.h:
+
+/usr/include/freetype2/freetype/freetype.h:
 
 ../src/zappers/zappers.cpp:
 
@@ -789,6 +826,8 @@ CMakeFiles/app.dir/src/main.cpp.o: ../src/main.cpp \
 
 /usr/include/x86_64-linux-gnu/bits/siginfo-arch.h:
 
+/usr/include/freetype2/freetype/config/ftheader.h:
+
 /usr/lib/gcc/x86_64-linux-gnu/11/include/tsxldtrkintrin.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/cldemoteintrin.h:
@@ -840,6 +879,8 @@ CMakeFiles/app.dir/src/main.cpp.o: ../src/main.cpp \
 ../libraries/glm/glm/detail/func_vector_relational.hpp:
 
 ../libraries/glm/glm/detail/setup.hpp:
+
+/usr/include/freetype2/freetype/config/mac-support.h:
 
 /usr/include/x86_64-linux-gnu/bits/waitstatus.h:
 
@@ -914,6 +955,8 @@ CMakeFiles/app.dir/src/main.cpp.o: ../src/main.cpp \
 /usr/lib/gcc/x86_64-linux-gnu/11/include/lzcntintrin.h:
 
 ../libraries/glm/glm/detail/func_matrix_simd.inl:
+
+/usr/include/freetype2/ft2build.h:
 
 /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h:
 
@@ -1254,6 +1297,8 @@ CMakeFiles/app.dir/src/main.cpp.o: ../src/main.cpp \
 /usr/include/c++/11/initializer_list:
 
 ../libraries/glm/glm/vec2.hpp:
+
+/usr/include/freetype2/freetype/ftsystem.h:
 
 /usr/lib/gcc/x86_64-linux-gnu/11/include/avx512vpopcntdqvlintrin.h:
 

@@ -19,14 +19,30 @@
 #include "coins/coins.cpp"
 #include "zappers/zappers.cpp"
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 #define SCREEN_HEIGHT 1080.0f
 #define SCREEN_WIDTH 1920.0f
 
 #define INITIAL_VELOCITY 0.0f
 #define JETPACK_ACCELERATION 1000.0f
 
+#define LEVEL_LENGTH 2000
+
 GLfloat ypos = 0.0f, yspeed = 0.0f, gravity = 500.0f, jetpack, flytime = 0.0f, maxyspeed = 0.0f, maxypos = 0.0f, prevyspeed = 0.0f, prevypos = 0.0f;
 int airflag = 0, ceilflag = 0;
+
+/// Holds all state information relevant to a character as loaded using FreeType
+struct Character {
+    unsigned int TextureID; // ID handle of the glyph texture
+    glm::ivec2   Size;      // Size of glyph
+    glm::ivec2   Bearing;   // Offset from baseline to left/top of glyph
+    unsigned int Advance;   // Horizontal offset to advance to next glyph
+};
+
+std::map<GLchar, Character> Characters;
+unsigned int textVAO, textVBO;
 
 void setySpeed(GLfloat t)
 {
@@ -118,6 +134,67 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
+}
+
+void RenderText(Shader &shader, std::string text, float x, float y, float scale, glm::vec3 color)
+{
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glGenVertexArrays(1, &textVAO);
+    glGenBuffers(1, &textVBO);
+    glBindVertexArray(textVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+
+    // activate corresponding render state	
+    shader.use();
+    glUniform3f(glGetUniformLocation(shader.ID, "textColor"), color.x, color.y, color.z);
+    glActiveTexture(GL_TEXTURE0);
+    glBindVertexArray(textVAO);
+
+    // iterate through all characters
+    std::string::const_iterator c;
+    for (c = text.begin(); c != text.end(); c++) 
+    {
+        Character ch = Characters[*c];
+
+        float xpos = x + ch.Bearing.x * scale;
+        float ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+
+        float w = ch.Size.x * scale;
+        float h = ch.Size.y * scale;
+        // update VBO for each character
+        float vertices[6][4] = {
+            { xpos,     ypos + h,   0.0f, 0.0f },            
+            { xpos,     ypos,       0.0f, 1.0f },
+            { xpos + w, ypos,       1.0f, 1.0f },
+
+            { xpos,     ypos + h,   0.0f, 0.0f },
+            { xpos + w, ypos,       1.0f, 1.0f },
+            { xpos + w, ypos + h,   1.0f, 0.0f }           
+        };
+        // render glyph texture over quad
+        glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+        // update content of VBO memory
+        glBindBuffer(GL_ARRAY_BUFFER, textVBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // be sure to use glBufferSubData and not glBufferData
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        // render quad
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+        x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+    }
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 int main()
@@ -254,6 +331,7 @@ int main()
     glfwSwapBuffers(window);
 
     Shader ourShader("../src/vshader.vs", "../src/fshader.fs");
+    Shader textShader("../src/textshader.vs", "../src/textshader.fs");
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
     int time = 0;
 
@@ -265,16 +343,23 @@ int main()
     glm::mat4 model = glm::mat4(1.0f);
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
 
-    GLfloat levels[3][3];
-    levels[0][0] = 3;
+    GLfloat levels[3][4];
+    levels[0][0] = 3 + rand()%2;
     levels[0][1] = 10;
     levels[0][2] = 0.004;
-    levels[1][0] = 4;
+    levels[0][3] = 0;
+    levels[1][0] = 4 + rand()%2;
     levels[1][1] = 10;
-    levels[1][2] = 0.004;
+    levels[1][2] = 0.006;
+    levels[1][3] = 3 + rand()%3;
     levels[2][0] = 4;
     levels[2][1] = 10;
     levels[2][2] = 0.006;
+    levels[2][3] = 10 + rand()%10;
+
+    int loss = 0, win = 0, score = 0;
+
+    int level = 0, leveltime = 0;
 
     int numOfZappers = 4;
     time_t curtime;
@@ -287,7 +372,7 @@ int main()
         if (i%2==0) zapperdisp[i][0] = rand()/(float)RAND_MAX * 0.75 - 0.75;
         else zapperdisp[i][0] = rand()/(float)RAND_MAX * 0.75;
         zapperdisp[i][1] = i * 2.4f/numOfZappers;
-        zapperdisp[i][2] = rand() % 11;
+        zapperdisp[i][2] = rand() % (11 + (int)levels[level][3]);
         zapperdisp[i][3] = 0;
         zapperdisp[i][4] = 0;
     }
@@ -302,16 +387,88 @@ int main()
         coindisp[i][2] = 0;
     }
 
-    int loss = 0, win = 0, score = 0;
-
-    int level = 0, leveltime = 0;
-
     ourShader.setInt("glow", 0);
     glm::vec4 midpoint = glm::vec4(0, 0, 0, 1);
     ourShader.setVec4("midpoint", midpoint);
 
+    glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
+    // FreeType
+    // --------
+    FT_Library ft;
+    // All functions return a value different than 0 whenever an error occurred
+    if (FT_Init_FreeType(&ft))
+    {
+        std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+        return -1;
+    }
+
+	// find path to font
+    std::string font_name = "../src/fonts/Antonio-Bold.ttf";
+    if (font_name.empty())
+    {
+        std::cout << "ERROR::FREETYPE: Failed to load font_name" << std::endl;
+        return -1;
+    }
+	
+	// load font as face
+    FT_Face face;
+    if (FT_New_Face(ft, font_name.c_str(), 0, &face)) {
+        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+        return -1;
+    }
+    else {
+        // set size to load glyphs as
+        FT_Set_Pixel_Sizes(face, 0, 48);
+
+        // disable byte-alignment restriction
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+        // load first 128 characters of ASCII set
+        for (unsigned char c = 0; c < 128; c++)
+        {
+            // Load character glyph 
+            if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+            {
+                std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+                continue;
+            }
+            // generate texture
+            unsigned int texture;
+            glGenTextures(1, &texture);
+            glBindTexture(GL_TEXTURE_2D, texture);
+            glTexImage2D(
+                GL_TEXTURE_2D,
+                0,
+                GL_RED,
+                face->glyph->bitmap.width,
+                face->glyph->bitmap.rows,
+                0,
+                GL_RED,
+                GL_UNSIGNED_BYTE,
+                face->glyph->bitmap.buffer
+            );
+            // set texture options
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            // now store character for later use
+            Character character = {
+                texture,
+                glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+                glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+                static_cast<unsigned int>(face->glyph->advance.x)
+            };
+            Characters.insert(std::pair<char, Character>(c, character));
+        }
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+    // destroy FreeType once we're finished
+    FT_Done_Face(face);
+    FT_Done_FreeType(ft);
 
     while(!glfwWindowShouldClose(window))
     {
@@ -319,146 +476,153 @@ int main()
             std::cout << "You lost, your score is: " << score << std::endl;
         else if (win)
             std::cout << "You won, your score is: " << score << std::endl;
-        if (time >= 20 / levels[level][2] * 0.004)
-        {
-            time = 0;
-            imgindex = (imgindex + 1) % 4;
-            if (ypos > 0)
-            {
-                imgindex = 4;
-            }
-        }
-        time++;
-        leveltime++;
-        if (leveltime > 1000)   // change this step value to increase level length
-        {
-            level++;
-            leveltime = 0;
-            std::cout << "NEW LEVEL" << std::endl;
-
-            for(int i=0; i<levels[level][0]; i++)
-            {
-                if (i%2==0) zapperdisp[i][0] = rand()/(float)RAND_MAX * 0.75 - 0.75;
-                else zapperdisp[i][0] = rand()/(float)RAND_MAX * 0.75;
-                zapperdisp[i][1] = i * 2.4f/levels[level][0];
-                zapperdisp[i][2] = rand() % 11;
-                zapperdisp[i][3] = 0;
-                zapperdisp[i][4] = 0;
-            }
-
-            for(int i=0; i<levels[level][1]; i++)
-            {
-                coindisp[i][0] = rand()/(float)RAND_MAX * 1.5 - 0.75;
-                coindisp[i][1] = i * 3.2f/levels[level][1];
-                coindisp[i][2] = 0;
-            }
-        }
-        if (level >= 3){
-            win = 1;
-            loss = 0;
-        }
-
-        numOfZappers = levels[level][0];
-        numOfCoins = levels[level][1];
-
-        processInput(window, &imgindex);
-
-        if (ypos < 0)
-        {
-            ypos = 0;
-            flytime = 0;
-            prevypos = 0;
-            prevyspeed = 0;
-        }
-        if (ypos > 1.5 || (airflag == 1 && round(ypos * 1000000)/(float)1000000 == 1.5))
-        {
-            ypos = 1.5;
-            flytime = 0;
-            prevypos = 1.5;
-            if (airflag == 0)
-            {
-                prevyspeed = -0.3 * yspeed;
-                maxypos = 1.5;
-                maxyspeed = -0.3 * yspeed;
-            }
-            else
-            {
-                prevyspeed = 0;
-                maxyspeed = 0;
-            }
-
-        }
-
-        if (airflag == 0 && ypos>0)
-        {
-            if (round((maxypos + maxyspeed * flytime - 0.5 * gravity * flytime * flytime)*100000) == 0 || (maxypos + maxyspeed * flytime - 0.5 * gravity * flytime * flytime < 0))
-            {
-                yspeed = 0.0f;
-                flytime = 0.0f;
-                ypos = 0.0f;
-                // std::cout << "at ground" << std::endl;
-                prevyspeed = yspeed;
-                prevypos = ypos;
-            }
-            else
-            {
-                yspeed = maxyspeed - gravity * flytime;
-                ypos = maxypos + maxyspeed * flytime - 0.5 * gravity * flytime * flytime;
-                flytime += 0.001f;
-                // std::cout << "freefall" << std::endl;
-                prevyspeed = yspeed;
-                prevypos = ypos;
-            }
-        }
-
-        for(int i=0; i<numOfZappers; i++)
-        {
-            if (zapperdisp[i][1] < -2.25)
-            {
-                if (i%2==0) zapperdisp[i][0] = rand()/(float)RAND_MAX * 0.75 - 0.75;
-                else zapperdisp[i][0] = rand()/(float)RAND_MAX * 0.75;
-                zapperdisp[i][1] = zapperdisp[(i+numOfZappers-1)%numOfZappers][1] + 2.4f/numOfZappers;
-                zapperdisp[i][2] = rand() % 11;
-                zapperdisp[i][3] = 0;
-                zapperdisp[i][4] = 0;
-                // std::cout << zapperdisp[i][0] << std::endl;
-            }
-            else zapperdisp[i][1] -= levels[level][2];
-        }
-
-        for(int i=0; i<numOfCoins; i++)
-        {
-            if (coindisp[i][1] < -2.25)
-            {
-                coindisp[i][0] = rand()/(float)RAND_MAX * 1.5 - 0.75;
-                coindisp[i][1] = coindisp[(i+numOfCoins-1)%numOfCoins][1] + 3.2f/numOfCoins;
-                coindisp[i][2] = 0;
-                // std::cout << zapperdisp[i][0] << std::endl;
-            }
-            else coindisp[i][1] -= levels[level][2];
-        }
-
+        
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        processInput(window, &imgindex);
+
+        ourShader.use();
+
         if (loss & !win)
         {
-            ourShader.use();
             model = glm::mat4(1);
             ourShader.setMat4("model", model);
             ourShader.setInt("glow", 0);
             lossbgwhile(&lossbgVAO, &lossbgtexture, ourShader);
+
+            std::string scoretext = "YOU LOSE! Your score is: " + std::to_string(score);
+            RenderText(textShader, scoretext, -0.55f, -0.9f, 0.0025f, glm::vec3(0.3, 0.7f, 0.9f));
         }
         else if (win & !loss)
         {
-            ourShader.use();
             model = glm::mat4(1);
             ourShader.setMat4("model", model);
             ourShader.setInt("glow", 0);
             winbgwhile(&winbgVAO, &winbgtexture, ourShader);
+
+            std::string scoretext = "Congrats! Your score is: " + std::to_string(score);
+            RenderText(textShader, scoretext, -0.55f, -0.95f, 0.0025f, glm::vec3(0.3, 0.7f, 0.9f));
         }
         else
         {
+            if (time >= 20 / levels[level][2] * 0.004)
+            {
+                time = 0;
+                imgindex = (imgindex + 1) % 4;
+                if (ypos > 0)
+                {
+                    imgindex = 4;
+                }
+            }
+            time++;
+            leveltime++;
+            if (leveltime > LEVEL_LENGTH)   // change this step value to increase level length
+            {
+                level++;
+                leveltime = 0;
+                std::cout << "NEW LEVEL" << std::endl;
+
+                for(int i=0; i<levels[level][0]; i++)
+                {
+                    if (i%2==0) zapperdisp[i][0] = rand()/(float)RAND_MAX * 0.75 - 0.75;
+                    else zapperdisp[i][0] = rand()/(float)RAND_MAX * 0.75;
+                    zapperdisp[i][1] = i * 2.4f/levels[level][0];
+                    zapperdisp[i][2] = rand() % (11 + (int)levels[level][3]);
+                    zapperdisp[i][3] = 0;
+                    zapperdisp[i][4] = 0;
+                }
+
+                for(int i=0; i<levels[level][1]; i++)
+                {
+                    coindisp[i][0] = rand()/(float)RAND_MAX * 1.5 - 0.75;
+                    coindisp[i][1] = i * 3.2f/levels[level][1];
+                    coindisp[i][2] = 0;
+                }
+            }
+            if (level >= 3){
+                win = 1;
+                loss = 0;
+            }
+
+            numOfZappers = levels[level][0];
+            numOfCoins = levels[level][1];
+
+            if (ypos < 0)
+            {
+                ypos = 0;
+                flytime = 0;
+                prevypos = 0;
+                prevyspeed = 0;
+            }
+            if (ypos > 1.5 || (airflag == 1 && round(ypos * 1000000)/(float)1000000 == 1.5))
+            {
+                ypos = 1.5;
+                flytime = 0;
+                prevypos = 1.5;
+                if (airflag == 0)
+                {
+                    prevyspeed = -0.3 * yspeed;
+                    maxypos = 1.5;
+                    maxyspeed = -0.3 * yspeed;
+                }
+                else
+                {
+                    prevyspeed = 0;
+                    maxyspeed = 0;
+                }
+
+            }
+
+            if (airflag == 0 && ypos>0)
+            {
+                if (round((maxypos + maxyspeed * flytime - 0.5 * gravity * flytime * flytime)*100000) == 0 || (maxypos + maxyspeed * flytime - 0.5 * gravity * flytime * flytime < 0))
+                {
+                    yspeed = 0.0f;
+                    flytime = 0.0f;
+                    ypos = 0.0f;
+                    // std::cout << "at ground" << std::endl;
+                    prevyspeed = yspeed;
+                    prevypos = ypos;
+                }
+                else
+                {
+                    yspeed = maxyspeed - gravity * flytime;
+                    ypos = maxypos + maxyspeed * flytime - 0.5 * gravity * flytime * flytime;
+                    flytime += 0.001f;
+                    // std::cout << "freefall" << std::endl;
+                    prevyspeed = yspeed;
+                    prevypos = ypos;
+                }
+            }
+
+            for(int i=0; i<numOfZappers; i++)
+            {
+                if (zapperdisp[i][1] < -2.25)
+                {
+                    if (i%2==0) zapperdisp[i][0] = rand()/(float)RAND_MAX * 0.75 - 0.75;
+                    else zapperdisp[i][0] = rand()/(float)RAND_MAX * 0.75;
+                    zapperdisp[i][1] = zapperdisp[(i+numOfZappers-1)%numOfZappers][1] + 2.4f/numOfZappers;
+                    zapperdisp[i][2] = rand() % (11 + (int)levels[level][3]);
+                    zapperdisp[i][3] = 0;
+                    zapperdisp[i][4] = 0;
+                    // std::cout << zapperdisp[i][0] << std::endl;
+                }
+                else zapperdisp[i][1] -= levels[level][2];
+            }
+
+            for(int i=0; i<numOfCoins; i++)
+            {
+                if (coindisp[i][1] < -2.25)
+                {
+                    coindisp[i][0] = rand()/(float)RAND_MAX * 1.5 - 0.75;
+                    coindisp[i][1] = coindisp[(i+numOfCoins-1)%numOfCoins][1] + 3.2f/numOfCoins;
+                    coindisp[i][2] = 0;
+                    // std::cout << zapperdisp[i][0] << std::endl;
+                }
+                else coindisp[i][1] -= levels[level][2];
+            }
+
             ourShader.setInt("glow", 0);
             midpoint = glm::vec4(0, 0, 0, 1);
             ourShader.setVec4("midpoint", midpoint);
@@ -485,7 +649,7 @@ int main()
                     theta = 90.0f;
                 else if (zapperdisp[i][2] >= 8 && zapperdisp[i][2] <= 9)
                     theta = -45.0f;
-                else if (zapperdisp[i][2] == 10)
+                else if (zapperdisp[i][2] >= 10)
                 {
                     theta = zapperdisp[i][3];
                     zapperdisp[i][3] += 1.0f;
@@ -613,7 +777,15 @@ int main()
                     coinwhile(&coinVAO, &cointexture, ourShader);
             }
             if (airflag == 1) ourShader.setInt("glow", 1);
-            else ourShader.setInt("glow", 0);           
+            else ourShader.setInt("glow", 0);
+            std::string scoretext = "Score: "+std::to_string(score);
+            std::string leveltext = "Level: "+std::to_string(level+1);
+            std::string leveldist = "Distance: "+std::to_string((int)(leveltime/10 * levels[level][2]/0.004))+"/"+std::to_string((int)(LEVEL_LENGTH/10 * levels[level][2]/0.004))+" m";
+
+            RenderText(textShader, scoretext, -0.95f, 0.8f, 0.0025f, glm::vec3(0.3, 0.7f, 0.9f));
+            RenderText(textShader, leveltext, -0.4f, 0.8f, 0.0025f, glm::vec3(0.3, 0.7f, 0.9f));
+            RenderText(textShader, leveldist, 0.05f, 0.8f, 0.0025f, glm::vec3(0.3, 0.7f, 0.9f));
+            ourShader.use();           
             
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture);
@@ -640,7 +812,6 @@ int main()
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); 
             
-            ourShader.use();
             glUniform1i(glGetUniformLocation(ourShader.ID, "OurTexture"), 0);
 
             glBindVertexArray(VAO);
