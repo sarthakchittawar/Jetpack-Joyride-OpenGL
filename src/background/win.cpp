@@ -49,16 +49,14 @@ GLuint winbgsetup(GLuint *VAO, GLuint *texture)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-
-    // GLuint *texture = text;
     glGenTextures(1, texture);
     glBindTexture(GL_TEXTURE_2D, *texture);
-    // set the texture wrapping/filtering options (on the currently bound texture object)
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // load and generate the texture
+
     int width, height, nrChannels;
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     stbi_set_flip_vertically_on_load(true);  
@@ -80,7 +78,6 @@ GLuint winbgsetup(GLuint *VAO, GLuint *texture)
 GLuint winbgwhile(GLuint *VAO, GLuint *texture, Shader ourShader)
 {
     glUniform1i(glGetUniformLocation(ourShader.ID, "OurTexture"), 0);
-    // binding issue
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, *texture);
 

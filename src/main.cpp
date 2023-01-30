@@ -33,12 +33,11 @@
 GLfloat ypos = 0.0f, yspeed = 0.0f, gravity = 500.0f, jetpack, flytime = 0.0f, maxyspeed = 0.0f, maxypos = 0.0f, prevyspeed = 0.0f, prevypos = 0.0f;
 int airflag = 0, ceilflag = 0;
 
-/// Holds all state information relevant to a character as loaded using FreeType
 struct Character {
-    unsigned int TextureID; // ID handle of the glyph texture
-    glm::ivec2   Size;      // Size of glyph
-    glm::ivec2   Bearing;   // Offset from baseline to left/top of glyph
-    unsigned int Advance;   // Horizontal offset to advance to next glyph
+    unsigned int TextureID;
+    glm::ivec2   Size;
+    glm::ivec2   Bearing;
+    unsigned int Advance;
 };
 
 std::map<GLchar, Character> Characters;
@@ -125,8 +124,6 @@ int checkCollision(glm::mat4 vertices1, glm::mat4 vertices2)
     return 0;
 }
 
-// int transform_arrays(GLfloat vertices1)
-
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 // ---------------------------------------------------------------------------------------------
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -153,14 +150,11 @@ void RenderText(Shader &shader, std::string text, float x, float y, float scale,
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-
-    // activate corresponding render state	
     shader.use();
     glUniform3f(glGetUniformLocation(shader.ID, "textColor"), color.x, color.y, color.z);
     glActiveTexture(GL_TEXTURE0);
     glBindVertexArray(textVAO);
 
-    // iterate through all characters
     std::string::const_iterator c;
     for (c = text.begin(); c != text.end(); c++) 
     {
@@ -171,7 +165,7 @@ void RenderText(Shader &shader, std::string text, float x, float y, float scale,
 
         float w = ch.Size.x * scale;
         float h = ch.Size.y * scale;
-        // update VBO for each character
+        
         float vertices[6][4] = {
             { xpos,     ypos + h,   0.0f, 0.0f },            
             { xpos,     ypos,       0.0f, 1.0f },
@@ -181,17 +175,13 @@ void RenderText(Shader &shader, std::string text, float x, float y, float scale,
             { xpos + w, ypos,       1.0f, 1.0f },
             { xpos + w, ypos + h,   1.0f, 0.0f }           
         };
-        // render glyph texture over quad
         glBindTexture(GL_TEXTURE_2D, ch.TextureID);
-        // update content of VBO memory
         glBindBuffer(GL_ARRAY_BUFFER, textVBO);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // be sure to use glBufferSubData and not glBufferData
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        // render quad
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        // now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-        x += (ch.Advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+        x += (ch.Advance >> 6) * scale;
     }
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -268,7 +258,7 @@ int main()
     }
 
     GLuint indices[] = {
-        0, 1, 2,                // triangle player
+        0, 1, 2,
         0, 2, 3,
     };
     
@@ -306,7 +296,6 @@ int main()
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(unsigned int)));
-    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -319,7 +308,6 @@ int main()
     unsigned int texture;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
-    // set the texture wrapping/filtering options (on the currently bound texture object)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -332,7 +320,6 @@ int main()
 
     Shader ourShader("../src/vshader.vs", "../src/fshader.fs");
     Shader textShader("../src/textshader.vs", "../src/textshader.fs");
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
     int time = 0;
 
     const char images[6][20] = {"../src/images/1.png", "../src/images/2.png", "../src/images/3.png", "../src/images/4.png", "../src/images/5.png", "../src/images/6.png"};
@@ -341,7 +328,6 @@ int main()
     GLfloat bgshift = 0.0f, zappershift = 0.0f;
 
     glm::mat4 model = glm::mat4(1.0f);
-    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINES);
 
     GLfloat levels[3][4];
     levels[0][0] = 3 + rand()%2;
@@ -396,16 +382,13 @@ int main()
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
     // FreeType
-    // --------
     FT_Library ft;
-    // All functions return a value different than 0 whenever an error occurred
     if (FT_Init_FreeType(&ft))
     {
         std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
         return -1;
     }
 
-	// find path to font
     std::string font_name = "../src/fonts/Antonio-Bold.ttf";
     if (font_name.empty())
     {
@@ -413,60 +396,37 @@ int main()
         return -1;
     }
 	
-	// load font as face
     FT_Face face;
     if (FT_New_Face(ft, font_name.c_str(), 0, &face)) {
         std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
         return -1;
     }
     else {
-        // set size to load glyphs as
         FT_Set_Pixel_Sizes(face, 0, 48);
-
-        // disable byte-alignment restriction
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-        // load first 128 characters of ASCII set
         for (unsigned char c = 0; c < 128; c++)
         {
-            // Load character glyph 
             if (FT_Load_Char(face, c, FT_LOAD_RENDER))
             {
                 std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
                 continue;
             }
-            // generate texture
             unsigned int texture;
             glGenTextures(1, &texture);
             glBindTexture(GL_TEXTURE_2D, texture);
-            glTexImage2D(
-                GL_TEXTURE_2D,
-                0,
-                GL_RED,
-                face->glyph->bitmap.width,
-                face->glyph->bitmap.rows,
-                0,
-                GL_RED,
-                GL_UNSIGNED_BYTE,
-                face->glyph->bitmap.buffer
-            );
-            // set texture options
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, face->glyph->bitmap.width, face->glyph->bitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE, face->glyph->bitmap.buffer);
+
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            // now store character for later use
-            Character character = {
-                texture,
-                glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-                glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-                static_cast<unsigned int>(face->glyph->advance.x)
-            };
+
+            Character character = {texture, glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows), glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top), static_cast<unsigned int>(face->glyph->advance.x)};
             Characters.insert(std::pair<char, Character>(c, character));
         }
         glBindTexture(GL_TEXTURE_2D, 0);
     }
-    // destroy FreeType once we're finished
     FT_Done_Face(face);
     FT_Done_FreeType(ft);
 
@@ -794,7 +754,6 @@ int main()
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture);
 
-            // load and generate the texture
             int width, height, nrChannels;
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
             stbi_set_flip_vertically_on_load(true);
