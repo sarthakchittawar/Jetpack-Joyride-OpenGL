@@ -472,10 +472,10 @@ int main()
 
     while(!glfwWindowShouldClose(window))
     {
-        if (loss)
-            std::cout << "You lost, your score is: " << score << std::endl;
-        else if (win)
-            std::cout << "You won, your score is: " << score << std::endl;
+        // if (loss)
+        //     std::cout << "You lost, your score is: " << score << std::endl;
+        // else if (win)
+        //     std::cout << "You won, your score is: " << score << std::endl;
         
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -492,7 +492,7 @@ int main()
             lossbgwhile(&lossbgVAO, &lossbgtexture, ourShader);
 
             std::string scoretext = "YOU LOSE! Your score is: " + std::to_string(score);
-            RenderText(textShader, scoretext, -0.55f, -0.9f, 0.0025f, glm::vec3(0.3, 0.7f, 0.9f));
+            RenderText(textShader, scoretext, -0.55f, -0.9f, 0.0025f, glm::vec3(1,0,0));
         }
         else if (win & !loss)
         {
@@ -502,7 +502,7 @@ int main()
             winbgwhile(&winbgVAO, &winbgtexture, ourShader);
 
             std::string scoretext = "Congrats! Your score is: " + std::to_string(score);
-            RenderText(textShader, scoretext, -0.55f, -0.95f, 0.0025f, glm::vec3(0.3, 0.7f, 0.9f));
+            RenderText(textShader, scoretext, -0.55f, -0.95f, 0.0025f, glm::vec3(0,1,0));
         }
         else
         {
@@ -521,7 +521,7 @@ int main()
             {
                 level++;
                 leveltime = 0;
-                std::cout << "NEW LEVEL" << std::endl;
+                // std::cout << "NEW LEVEL" << std::endl;
 
                 for(int i=0; i<levels[level][0]; i++)
                 {
@@ -764,7 +764,7 @@ int main()
                     if (coindisp[i][2] == 0)
                     {
                         score++;
-                        std:: cout << "score: " << score << std::endl;
+                        // std:: cout << "score: " << score << std::endl;
                     }
                     coindisp[i][2] = 1;
                 }
@@ -782,11 +782,15 @@ int main()
             std::string leveltext = "Level: "+std::to_string(level+1);
             std::string leveldist = "Distance: "+std::to_string((int)(leveltime/10 * levels[level][2]/0.004))+"/"+std::to_string((int)(LEVEL_LENGTH/10 * levels[level][2]/0.004))+" m";
 
-            RenderText(textShader, scoretext, -0.95f, 0.8f, 0.0025f, glm::vec3(0.3, 0.7f, 0.9f));
-            RenderText(textShader, leveltext, -0.4f, 0.8f, 0.0025f, glm::vec3(0.3, 0.7f, 0.9f));
-            RenderText(textShader, leveldist, 0.05f, 0.8f, 0.0025f, glm::vec3(0.3, 0.7f, 0.9f));
-            ourShader.use();           
-            
+            RenderText(textShader, scoretext, -0.95f, 0.8f, 0.0025f, glm::vec3(0, 1, 0));
+            RenderText(textShader, leveltext, -0.4f, 0.8f, 0.0025f, glm::vec3(0, 1, 0));
+            RenderText(textShader, leveldist, 0.05f, 0.8f, 0.0025f, glm::vec3(0, 1, 0));
+            if (level != 0 && leveltime < 100)
+                RenderText(textShader, "NEXT LEVEL", -0.95f, -0.3f, 0.01f, glm::vec3(1,1,0.5));
+            else if (level == 0 && leveltime < 100)
+                RenderText(textShader, "ALL THE BEST!", -0.55f, -0.2f, 0.005f, glm::vec3(1,1,0.5));
+            ourShader.use();
+
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -841,5 +845,3 @@ int main()
     glfwDestroyWindow(window);    
     glfwTerminate();
 }
-
-// The zappers/coins of next level overlap with those of prev level, FIX THAT
