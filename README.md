@@ -2,6 +2,8 @@
 
 ### This project was done as a part of the Computer Graphics course in IIIT-Hyderabad.
 
+![](https://github.com/sarthakchittawar/Jetpack-Joyride-OpenGL/blob/master/example.gif)
+
 ### Instructions to Compile
 1. Download the `.zip` folder and extract it.
 2. Download and install libraries such as GLEW, GLFW & its dependencies, Freetype, GLAD, GLM, etc.
