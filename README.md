@@ -11,6 +11,7 @@
 4. Do the following commands:
 * `cd build;`
 * `cmake ..; make;`
+* `cd ../src`
 * `./app`
 
 ### Instructions to play game
